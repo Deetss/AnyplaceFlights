@@ -1,7 +1,7 @@
 class CreateFlights < ActiveRecord::Migration
   def change
     create_table :flights do |t|
-      t.datetime :start_time
+      t.date :start_date
       t.time :flight_duration
       t.references :from_airport
       t.references :to_airport
