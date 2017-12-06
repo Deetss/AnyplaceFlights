@@ -1,26 +1,27 @@
-<%= form_for @flight, method: :get do |f| %>
-    <%= f.label :from %>
+<%= form_for :flight, method: :get do |f| %>
+    <%= f.label :from_airport_id %>
     <%= f.collection_select(:from_airport_id, Airport.all, :id, :code) %>
     
-    <%= f.label :to %>
+    <%= f.label :to_airport_id %>
     <%= f.collection_select(:to_airport_id, Airport.all, :id, :code) %>
     
-    <%= select_tag :number_of_passengers, options_for_select((1..10)) %>
+    <%= f.label :num_passengers, "Passengers" %>
+    <%= select_tag :num_passengers, options_for_select((1..10)) %>
     
     <%= f.label :date %>
     <%= f.collection_select(:start_date, @flights, :start_date, :date_formated) %>
     
     <%= f.submit "Find Flight" %> </br>
-    
-    <% if @results.empty? %>
-        <p>No flights found with that criteria!</p>
-    <% else %>
-        <%= f.fields_for :booking, method: :get, url: new_booking_path do |b| %>
-            <% @results.each do |flight| %>
-                <%= b.radio_button(:flight_id, flight.id) %> From: <%= flight.from_airport.code %> To: <%= flight.to_airport.code %><br>
-            <% end %>
-            <%= b.submit "Book it" %>
+<% end %>
+
+<% if @results.nil? || @results.empty? %>
+    <p>No flights found with that criteria!</p>
+<% else %>
+    <%= form_for :booking, method: :get, url: new_booking_path do |b| %>
+        <%= b.hidden_field(:passengers, :value => params[:flight][:num_passengers]) %>
+        <% @results.each do |result| %>
+            <%= b.radio_button(:flight_id, result.id) %> From: <%= result.from_airport.code %> To: <%= result.to_airport.code %><br>
         <% end %>
+        <%= b.submit "Book it" %>
     <% end %>
-    
 <% end %>
