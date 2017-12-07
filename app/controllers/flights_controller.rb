@@ -2,8 +2,11 @@ class FlightsController < ApplicationController
     def index
         @flight = Flight.new
         @flights = Flight.all
-        @results = Flight.all.where(results_params) unless params[:flight].nil?
-        
+        if params[:flight].nil?
+            @results = nil
+        else
+            @results = Flight.all.where(results_params)
+        end
     end
     
     

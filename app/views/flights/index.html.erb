@@ -1,27 +1,50 @@
 <%= form_for :flight, method: :get do |f| %>
-    <%= f.label :from_airport_id %>
-    <%= f.collection_select(:from_airport_id, Airport.all, :id, :code) %>
-    
-    <%= f.label :to_airport_id %>
-    <%= f.collection_select(:to_airport_id, Airport.all, :id, :code) %>
-    
-    <%= f.label :num_passengers, "Passengers" %>
-    <%= select_tag :num_passengers, options_for_select((1..10)) %>
-    
-    <%= f.label :date %>
-    <%= f.collection_select(:start_date, @flights, :start_date, :date_formated) %>
-    
-    <%= f.submit "Find Flight" %> </br>
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="small-6 cell">
+                <%= f.label :from_airport_id %>
+                <%= f.collection_select(:from_airport_id, Airport.all, :id, :name) %>
+            </div>
+            
+            <div class="small-6 cell">    
+                <%= f.label :to_airport_id %>
+                <%= f.collection_select(:to_airport_id, Airport.all, :id, :name) %>
+            </div>
+            
+            <div class="small-6 cell">
+                <%= f.label :num_passengers, "Passengers" %>
+                <%= select_tag :num_passengers, options_for_select((1..10)) %>
+            </div>
+            
+            <div class="small-6 cell">   
+                <%= f.label :date %>
+                <%= f.collection_select(:start_date, @flights, :start_date, :date_formated) %>
+            </div>
+        </div>
+        <div class="grid-y grid-padding-x">
+            <div class="small-3 float-center cell">
+                <%= f.submit "Find Flight", class: "button" %> </br>
+            </div>
+        </div>
+    </div>
 <% end %>
-
-<% if @results.nil? || @results.empty? %>
-    <p>No flights found with that criteria!</p>
-<% else %>
-    <%= form_for :booking, method: :get, url: new_booking_path do |b| %>
-        <%= b.hidden_field(:passengers, :value => params[:flight][:num_passengers]) %>
-        <% @results.each do |result| %>
-            <%= b.radio_button(:flight_id, result.id) %> From: <%= result.from_airport.code %> To: <%= result.to_airport.code %><br>
+<hr>
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell auto text-center">
+        <% if @results.nil? %>
+        <p></p>
+        <% elsif @results.empty? %>
+            <p>No flights found with that criteria!</p>
+        <% else %>
+            <%= form_for :booking, method: :get, url: new_booking_path do |b| %>
+                <%= b.hidden_field(:num_passengers, :value => params[:num_passengers]) %>
+                <% @results.each do |flight| %>
+                    <%= b.radio_button(:flight_id, flight.id) %> From: <%= flight.from_airport.code %> To: <%= flight.to_airport.code %><br>
+                <% end %>
+                <%= b.submit "Book it", class: "button" %>
+            <% end %>
         <% end %>
-        <%= b.submit "Book it" %>
-    <% end %>
-<% end %>
+        </div>
+    </div>
+</div>

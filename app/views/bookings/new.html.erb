@@ -1,5 +1,43 @@
-<h1>Book a flight</h1>
-<%= form_for :booking do |b| %>
-    <%= b.label :flight %>
-    <%= b.text_field :flight, params[:flight_id] %>
+<%= form_for @booking do |b| %>
+<div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <h4>Flight information</h4>
+            </div>
+            <hr>
+            <%= b.hidden_field(:flight_id, :value => @flight.id) %>
+            <div class="small-6 cell">
+                <%= b.label :flight, "Flight Number:" %>
+                <p><%= @flight.id %></p>
+            </div>
+            <div class="small-6 cell">
+                <%= b.label :flight_date, "Flight Date:" %>
+                <p><%= @flight.date_formated %></p>
+            </div>
+            <div class="small-6 cell">
+                <p>From: <%= @flight.from_airport.name %>
+                (<%= @flight.from_airport.code %>)</p>
+            </div>
+            <div class="small-6 cell">
+                <p>To: <%= @flight.to_airport.name %><br>
+                (<%= @flight.to_airport.code %>)</p>
+            </div>
+            <div class="cell">
+                <h4>Passengers</h4>
+            </div>
+            
+            <div class="cell">
+                <%= b.fields_for :passengers do |passengers_form| %>
+                    <hr>
+                    <%= passengers_form.label :name %>
+                    <%= passengers_form.text_field :name %>
+                    
+                    <%= passengers_form.label :email %>
+                    <%= passengers_form.text_field :email %>
+                    <hr>
+                <% end %>
+            </div>
+            <%= b.submit "Book it", class: "button float-center" %>
+        </div>
+    </div>
 <% end %>
